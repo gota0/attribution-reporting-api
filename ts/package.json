@@ -7,6 +7,7 @@
     "build": "tsc",
     "pack": "webpack --mode production",
     "flexible-event": "node dist/flexible-event/main.js",
+    "header": "node dist/header-validator/main.js",
     "test": "node --test dist/",
     "pretty": "prettier . --write",
     "pretty:check": "prettier . --check",
@@ -18,8 +19,7 @@
     "memoizee": "^0.4.15",
     "psl": "^1.9.0",
     "structured-headers": "^1.0.1",
-    "ts-command-line-args": "^2.5.1",
-    "uuid": "^9.0.1"
+    "ts-command-line-args": "^2.5.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",

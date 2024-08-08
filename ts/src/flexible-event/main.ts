@@ -3,8 +3,8 @@ import { readFileSync } from 'fs'
 
 import { Issue } from '../header-validator/context'
 import { Maybe } from '../header-validator/maybe'
-import { validateSource } from '../header-validator/validate-json'
-import { SourceType } from '../source-type'
+import { validateSource } from '../header-validator/validate-source'
+import { SourceType, parseSourceType } from '../source-type'
 import * as vsv from '../vendor-specific-values'
 import { Config, PerTriggerDataConfig } from './privacy'
 
@@ -14,13 +14,6 @@ type Wrapped<T> = { value: T }
 
 function commaSeparatedInts(str: string): Wrapped<number[]> {
   return { value: str.split(',').map((v) => Number(v)) }
-}
-
-function parseSourceType(str: string): SourceType {
-  if (!(str in SourceType)) {
-    throw new Error('unknown source type')
-  }
-  return str as SourceType
 }
 
 interface Arguments {
@@ -74,12 +67,11 @@ function logIssue(prefix: string, i: Issue): void {
 let config: Maybe<Config> = Maybe.None
 if (options.json_file !== undefined) {
   const json = readFileSync(options.json_file, { encoding: 'utf8' })
-  const [{ errors, warnings }, source] = validateSource(
-    json,
-    vsv.Chromium,
-    options.source_type,
-    /*parseFullFlex=*/ true
-  )
+  const [{ errors, warnings }, source] = validateSource(json, {
+    vsv: vsv.Chromium,
+    sourceType: options.source_type,
+    fullFlex: true,
+  })
   warnings.forEach((i) => logIssue('W', i))
   if (errors.length > 0) {
     errors.forEach((i) => logIssue('E', i))
